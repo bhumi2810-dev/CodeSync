@@ -11,7 +11,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
 		<div className="min-h-screen bg-slate-950 flex items-center justify-center px-6">
 			<Card className="w-full max-w-md">
 				<div className="mb-8 flex justify-center">
-					<Logo size="medium" />
+					<Logo size="md" />
 				</div>
 
 				{children}

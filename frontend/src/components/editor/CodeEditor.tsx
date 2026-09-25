@@ -11,12 +11,16 @@ const CodeEditor = ({
   value,
   onChange,
 }: CodeEditorProps) => {
-  const handleEditorChange = (newValue: string | undefined) => {
+
+  const handleEditorChange = (
+    newValue: string | undefined
+  ) => {
     onChange(newValue ?? "");
   };
 
   return (
-    <div className="h-full w-full overflow-hidden">
+    <div className="h-full w-full">
+
       <Editor
         height="100%"
         width="100%"
@@ -24,17 +28,38 @@ const CodeEditor = ({
         value={value}
         onChange={handleEditorChange}
         theme="vs-dark"
+
         options={{
           fontSize: 15,
           minimap: {
             enabled: false,
           },
+
           automaticLayout: true,
+
           padding: {
-            top: 16,
+            top: 20,
+            bottom: 20,
           },
+
+          scrollBeyondLastLine: false,
+
+          lineNumbers: "on",
+
+          roundedSelection: false,
+
+          cursorBlinking: "smooth",
+
+          smoothScrolling: true,
+
+          wordWrap: "on",
+
+          tabSize: 4,
+
+          suggestOnTriggerCharacters: true,
         }}
       />
+
     </div>
   );
 };

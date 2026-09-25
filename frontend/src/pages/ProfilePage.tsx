@@ -5,6 +5,10 @@ import {
   FaCode,
   FaSave,
   FaArrowLeft,
+  FaEdit,
+  FaLaptopCode,
+  FaStar,
+  FaLanguage,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -21,23 +25,24 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-950 text-white">
+    <div className="min-h-screen w-full text-white">
 
       {/* Header */}
-      <header className="flex h-16 items-center justify-between border-b border-slate-800 bg-slate-950 px-6">
+      <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-white/10 bg-slate-950/85 px-4 backdrop-blur-xl md:px-8">
 
         <div className="flex items-center gap-3">
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600">
-            <FaCode />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-400/20 bg-indigo-500/10 text-sm font-bold text-indigo-400">
+            {"</>"}
           </div>
 
           <div>
             <h1 className="text-lg font-bold">
-              Code<span className="text-blue-500">Sync</span>
+              <span className="text-white">Code</span>
+              <span className="gradient-text">Sync</span>
             </h1>
 
-            <p className="text-xs text-slate-500">
+            <p className="hidden text-[10px] text-slate-500 sm:block">
               Collaborative Coding
             </p>
           </div>
@@ -45,62 +50,81 @@ const ProfilePage = () => {
         </div>
 
         <button
+          type="button"
           onClick={() => navigate("/dashboard")}
-          className="flex items-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:border-blue-500 hover:text-white"
+          className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-300 transition hover:border-indigo-500/30 hover:bg-indigo-500/10 hover:text-white md:px-4 md:text-sm"
         >
-          <FaArrowLeft />
+          <FaArrowLeft size={12} />
           Dashboard
         </button>
 
       </header>
 
-      {/* Main Content */}
-      <main className="mx-auto w-full max-w-5xl px-6 py-10">
+      {/* Main */}
+      <main className="mx-auto w-full max-w-6xl px-4 py-8 md:px-8 md:py-10">
 
         {/* Page Title */}
         <div className="mb-8">
 
-          <p className="text-sm font-medium text-blue-400">
-            ACCOUNT
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-400">
+            Account Settings
           </p>
 
-          <h2 className="mt-1 text-3xl font-bold">
-            Profile
+          <h2 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">
+            Your Profile
           </h2>
 
-          <p className="mt-2 text-sm text-slate-500">
-            Manage your CodeSync account and coding preferences.
+          <p className="mt-2 max-w-xl text-sm text-slate-500">
+            Manage your account information and coding preferences.
           </p>
 
         </div>
 
         {/* Profile Card */}
-        <section className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+        <section className="glass-card overflow-hidden rounded-2xl">
 
           {/* Profile Header */}
-          <div className="border-b border-slate-800 bg-gradient-to-r from-slate-900 to-blue-950/30 p-8">
+          <div className="relative overflow-hidden border-b border-white/10 p-6 md:p-8">
 
-            <div className="flex flex-col items-center gap-5 sm:flex-row">
+            <div className="absolute -right-24 -top-24 h-56 w-56 rounded-full bg-indigo-500/10 blur-3xl" />
+
+            <div className="relative flex flex-col items-center gap-5 sm:flex-row">
 
               {/* Avatar */}
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-blue-600 text-3xl font-bold shadow-lg shadow-blue-900/30">
-                B
+              <div className="relative">
+
+                <div className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-indigo-400/20 bg-gradient-to-br from-indigo-500 to-blue-600 text-3xl font-bold text-white shadow-lg shadow-indigo-500/20">
+                  {name.charAt(0).toUpperCase()}
+                </div>
+
+                <div className="absolute bottom-1 right-1 h-4 w-4 rounded-full border-2 border-slate-950 bg-green-400" />
+
               </div>
 
               {/* User Info */}
               <div className="text-center sm:text-left">
 
-                <h3 className="text-2xl font-bold">
+                <h3 className="text-2xl font-bold text-white">
                   {name}
                 </h3>
 
-                <p className="mt-1 text-slate-400">
+                <p className="mt-1 text-sm text-indigo-400">
                   {role}
                 </p>
 
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-xs text-slate-500">
                   CodeSync Developer
                 </p>
+
+              </div>
+
+              {/* Profile Settings */}
+              <div className="sm:ml-auto">
+
+                <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-slate-400">
+                  <FaEdit size={12} />
+                  Profile Settings
+                </div>
 
               </div>
 
@@ -109,40 +133,41 @@ const ProfilePage = () => {
           </div>
 
           {/* Personal Information */}
-          <div className="p-8">
+          <div className="p-6 md:p-8">
 
             <div className="mb-6">
 
-              <h3 className="text-lg font-semibold">
+              <h3 className="text-lg font-semibold text-white">
                 Personal Information
               </h3>
 
-              <p className="mt-1 text-sm text-slate-500">
-                Update your basic account information.
+              <p className="mt-1 text-xs text-slate-500">
+                Update the information shown on your CodeSync profile.
               </p>
 
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
 
               {/* Name */}
               <div>
 
-                <label className="mb-2 block text-sm font-medium text-slate-300">
+                <label className="mb-2 block text-xs font-medium text-slate-400">
                   Name
                 </label>
 
                 <div className="relative">
 
-                  <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <FaUser
+                    size={13}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600"
+                  />
 
                   <input
                     type="text"
                     value={name}
-                    onChange={(event) =>
-                      setName(event.target.value)
-                    }
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800 py-3 pl-10 pr-4 text-sm text-white outline-none transition focus:border-blue-500"
+                    onChange={(event) => setName(event.target.value)}
+                    className="w-full rounded-xl border border-white/10 bg-white/[0.04] py-3 pl-10 pr-4 text-sm text-white outline-none transition hover:border-white/20 focus:border-indigo-500/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-indigo-500/10"
                   />
 
                 </div>
@@ -152,21 +177,22 @@ const ProfilePage = () => {
               {/* Email */}
               <div>
 
-                <label className="mb-2 block text-sm font-medium text-slate-300">
+                <label className="mb-2 block text-xs font-medium text-slate-400">
                   Email
                 </label>
 
                 <div className="relative">
 
-                  <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <FaEnvelope
+                    size={13}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600"
+                  />
 
                   <input
                     type="email"
                     value={email}
-                    onChange={(event) =>
-                      setEmail(event.target.value)
-                    }
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800 py-3 pl-10 pr-4 text-sm text-white outline-none transition focus:border-blue-500"
+                    onChange={(event) => setEmail(event.target.value)}
+                    className="w-full rounded-xl border border-white/10 bg-white/[0.04] py-3 pl-10 pr-4 text-sm text-white outline-none transition hover:border-white/20 focus:border-indigo-500/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-indigo-500/10"
                   />
 
                 </div>
@@ -176,53 +202,77 @@ const ProfilePage = () => {
               {/* Role */}
               <div>
 
-                <label className="mb-2 block text-sm font-medium text-slate-300">
+                <label className="mb-2 block text-xs font-medium text-slate-400">
                   Role
                 </label>
 
-                <input
-                  type="text"
-                  value={role}
-                  onChange={(event) =>
-                    setRole(event.target.value)
-                  }
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500"
-                />
+                <div className="relative">
+
+                  <FaCode
+                    size={13}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600"
+                  />
+
+                  <input
+                    type="text"
+                    value={role}
+                    onChange={(event) => setRole(event.target.value)}
+                    className="w-full rounded-xl border border-white/10 bg-white/[0.04] py-3 pl-10 pr-4 text-sm text-white outline-none transition hover:border-white/20 focus:border-indigo-500/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-indigo-500/10"
+                  />
+
+                </div>
 
               </div>
 
               {/* Language */}
               <div>
 
-                <label className="mb-2 block text-sm font-medium text-slate-300">
+                <label className="mb-2 block text-xs font-medium text-slate-400">
                   Default Language
                 </label>
 
-                <select
-                  value={language}
-                  onChange={(event) =>
-                    setLanguage(event.target.value)
-                  }
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500"
-                >
-                  <option value="Java">Java</option>
-                  <option value="JavaScript">
-                    JavaScript
-                  </option>
-                </select>
+                <div className="relative">
+
+                  <FaLanguage
+                    size={15}
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400"
+                  />
+
+                  <select
+                    value={language}
+                    onChange={(event) => setLanguage(event.target.value)}
+                    className="w-full appearance-none rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 pl-10 text-sm text-white outline-none transition hover:border-white/20 focus:border-indigo-500/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-indigo-500/10"
+                  >
+                    <option
+                      value="Java"
+                      className="bg-slate-900 text-white"
+                    >
+                      Java
+                    </option>
+
+                    <option
+                      value="JavaScript"
+                      className="bg-slate-900 text-white"
+                    >
+                      JavaScript
+                    </option>
+                  </select>
+
+                </div>
 
               </div>
 
             </div>
 
             {/* Save Button */}
-            <div className="mt-8 flex justify-end">
+            <div className="mt-7 flex justify-end">
 
               <button
+                type="button"
                 onClick={handleSave}
-                className="flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-500"
+                className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-500 hover:shadow-indigo-500/30 active:scale-[0.98]"
               >
-                <FaSave />
+                <FaSave size={13} />
                 Save Changes
               </button>
 
@@ -232,54 +282,93 @@ const ProfilePage = () => {
 
         </section>
 
-        {/* Account Information */}
-        <section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+        {/* Statistics */}
+        <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+          {/* Rooms */}
+          <div className="glass-card rounded-2xl p-5">
 
-            <p className="text-xs uppercase tracking-wide text-slate-500">
-              Rooms
-            </p>
+            <div className="flex items-center justify-between">
 
-            <p className="mt-2 text-2xl font-bold">
-              3
-            </p>
+              <div>
 
-            <p className="mt-1 text-xs text-slate-500">
-              Recent coding rooms
-            </p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                  Rooms
+                </p>
 
-          </div>
+                <p className="mt-2 text-2xl font-bold text-white">
+                  3
+                </p>
 
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+                <p className="mt-1 text-[11px] text-slate-600">
+                  Coding rooms
+                </p>
 
-            <p className="text-xs uppercase tracking-wide text-slate-500">
-              Reviews
-            </p>
+              </div>
 
-            <p className="mt-2 text-2xl font-bold">
-              8
-            </p>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-500/10 bg-indigo-500/10 text-indigo-400">
+                <FaLaptopCode size={16} />
+              </div>
 
-            <p className="mt-1 text-xs text-slate-500">
-              Code reviews completed
-            </p>
+            </div>
 
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+          {/* Reviews */}
+          <div className="glass-card rounded-2xl p-5">
 
-            <p className="text-xs uppercase tracking-wide text-slate-500">
-              Language
-            </p>
+            <div className="flex items-center justify-between">
 
-            <p className="mt-2 text-2xl font-bold">
-              {language}
-            </p>
+              <div>
 
-            <p className="mt-1 text-xs text-slate-500">
-              Default coding language
-            </p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                  Reviews
+                </p>
+
+                <p className="mt-2 text-2xl font-bold text-white">
+                  8
+                </p>
+
+                <p className="mt-1 text-[11px] text-slate-600">
+                  Reviews completed
+                </p>
+
+              </div>
+
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-500/10 bg-indigo-500/10 text-indigo-400">
+                <FaStar size={15} />
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* Language */}
+          <div className="glass-card rounded-2xl p-5">
+
+            <div className="flex items-center justify-between">
+
+              <div>
+
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                  Language
+                </p>
+
+                <p className="mt-2 truncate text-2xl font-bold text-white">
+                  {language}
+                </p>
+
+                <p className="mt-1 text-[11px] text-slate-600">
+                  Default language
+                </p>
+
+              </div>
+
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-500/10 bg-indigo-500/10 text-indigo-400">
+                <FaCode size={16} />
+              </div>
+
+            </div>
 
           </div>
 

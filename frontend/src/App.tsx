@@ -2,33 +2,73 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import DashboardPage from "./pages/DashboardPage";
 import EditorPage from "./pages/EditorPage";
 import ProfilePage from "./pages/ProfilePage";
+import NotFoundPage from "./pages/NotFoundPage";
 
-function App() {
+const App = () => {
   return (
     <BrowserRouter>
-      <Routes>
 
-        {/* Login */}
-        <Route path="/" element={<LoginPage />} />
+      <div className="app-background relative min-h-screen overflow-hidden">
 
-        {/* Signup */}
-        <Route path="/signup" element={<SignupPage />} />
+        <div className="background-blob blob-one" />
+        <div className="background-blob blob-two" />
+        <div className="background-blob blob-three" />
 
-        {/* Dashboard */}
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <div className="relative z-10 min-h-screen">
 
-        {/* Editor */}
-        <Route path="/editor" element={<EditorPage />} />
+          <Routes>
 
-        {/* Profile */}
-        <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/" element={<LoginPage />} />
 
-      </Routes>
+            <Route
+              path="/signup"
+              element={<SignupPage />}
+            />
+
+            <Route
+              path="/forgot-password"
+              element={<ForgotPasswordPage />}
+            />
+
+            <Route
+              path="/reset-password"
+              element={<ResetPasswordPage />}
+            />
+
+            <Route
+              path="/dashboard"
+              element={<DashboardPage />}
+            />
+
+            <Route
+              path="/editor"
+              element={<EditorPage />}
+            />
+
+            <Route
+              path="/profile"
+              element={<ProfilePage />}
+            />
+
+            {/* 404 Page */}
+            <Route
+              path="*"
+              element={<NotFoundPage />}
+            />
+
+          </Routes>
+
+        </div>
+
+      </div>
+
     </BrowserRouter>
   );
-}
+};
 
 export default App;

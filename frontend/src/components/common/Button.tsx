@@ -1,62 +1,60 @@
-import { ButtonHTMLAttributes, ReactNode } from "react"
+import type { ReactNode } from "react";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-	children: ReactNode
-	variant?: "primary" | "secondary" | "danger"
-	size?: "sm" | "md" | "lg"
-	loading?: boolean
+interface ButtonProps {
+  children: ReactNode;
+  onClick?: () => void;
+  type?: "button" | "submit";
+  variant?: "primary" | "glass" | "danger";
+  disabled?: boolean;
+  className?: string;
 }
 
 const Button = ({
-	children,
-	variant = "primary",
-	size = "md",
-	loading = false,
-	disabled,
-	className = "",
-	...props
+  children,
+  onClick,
+  type = "button",
+  variant = "primary",
+  disabled = false,
+  className = "",
 }: ButtonProps) => {
-	// Variant Styles
-	const variantStyles = {
-		primary: "bg-blue-600 hover:bg-blue-700 text-white",
+  let buttonStyle = "";
 
-		secondary: "bg-slate-700 hover:bg-slate-600 text-white",
+  if (variant === "primary") {
+    buttonStyle = "gradient-button text-white";
+  }
 
-		danger: "bg-red-600 hover:bg-red-700 text-white",
-	}
+  if (variant === "glass") {
+    buttonStyle = "liquid-button text-slate-200";
+  }
 
-	// Size Styles
-	const sizeStyles = {
-		sm: "px-4 py-2 text-sm",
-		md: "px-5 py-3 text-base",
-		lg: "px-6 py-4 text-lg",
-	}
+  if (variant === "danger") {
+    buttonStyle =
+      "border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20";
+  }
 
-	return (
-		<button
-			disabled={disabled || loading}
-			className={`
-        rounded-xl
-        font-medium
-        transition-all
-        duration-300
-        shadow-md
-        hover:shadow-lg
-        disabled:opacity-50
-        disabled:cursor-not-allowed
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`
         flex
         items-center
         justify-center
         gap-2
-        ${variantStyles[variant]}
-        ${sizeStyles[size]}
+        rounded-xl
+        px-5
+        py-2.5
+        text-sm
+        font-semibold
+        ${buttonStyle}
+        ${disabled ? "cursor-not-allowed opacity-50" : ""}
         ${className}
       `}
-			{...props}
-		>
-			{loading ? "Loading..." : children}
-		</button>
-	)
-}
+    >
+      {children}
+    </button>
+  );
+};
 
-export default Button
+export default Button;

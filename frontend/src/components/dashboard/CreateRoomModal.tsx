@@ -80,7 +80,7 @@ const CreateRoomModal = ({
 				</div>
 
 				<div className="mt-8 flex justify-end gap-3">
-					<Button variant="secondary" onClick={onClose}>
+					<Button variant="glass" onClick={onClose}>
 						Cancel
 					</Button>
 

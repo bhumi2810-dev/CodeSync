@@ -1,4 +1,8 @@
-import { FaPlay, FaUsers } from "react-icons/fa";
+import {
+  FaPlay,
+  FaUsers,
+  FaCode,
+} from "react-icons/fa";
 
 interface EditorHeaderProps {
   roomName?: string;
@@ -14,55 +18,89 @@ const EditorHeader = ({
   onRun,
 }: EditorHeaderProps) => {
   return (
-    <header className="flex h-16 items-center justify-between border-b border-slate-700 bg-slate-900 px-6">
-      
+    <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 bg-slate-950/90 px-4 backdrop-blur-xl md:px-6">
+
       {/* Left Section */}
-      <div className="flex items-center gap-6">
-        <h1 className="text-xl font-bold">
-          <span className="text-white">Code</span>
-          <span className="text-blue-500">Sync</span>
-        </h1>
+      <div className="flex min-w-0 items-center gap-4">
 
-        <div className="h-6 w-px bg-slate-700" />
+        {/* CodeSync Logo */}
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-cyan-400 text-xs font-bold text-white shadow-lg shadow-indigo-500/20">
+            {"</>"}
+          </div>
 
-        <div className="text-sm text-slate-400">
-          Room:
-          <span className="ml-2 font-medium text-white">
+          <h1 className="hidden text-lg font-bold sm:block">
+            <span className="text-white">Code</span>
+            <span className="gradient-text">Sync</span>
+          </h1>
+        </div>
+
+        {/* Divider */}
+        <div className="hidden h-6 w-px bg-white/10 sm:block" />
+
+        {/* Room */}
+        <div className="hidden items-center gap-2 sm:flex">
+          <span className="text-xs text-slate-500">
+            Room
+          </span>
+
+          <span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-slate-200">
             {roomName}
           </span>
         </div>
       </div>
 
       {/* Right Section */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-3">
 
         {/* Language Selector */}
-        <select
-          value={language}
-          onChange={(event) =>
-            onLanguageChange(event.target.value)
-          }
-          className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-white outline-none transition focus:border-blue-500"
-        >
-          <option value="java">Java</option>
-          <option value="javascript">JavaScript</option>
-        </select>
+        <div className="relative flex items-center">
+          <FaCode className="pointer-events-none absolute left-3 text-xs text-indigo-400" />
+
+          <select
+            value={language}
+            onChange={(event) =>
+              onLanguageChange(event.target.value)
+            }
+            className="h-9 appearance-none rounded-lg border border-white/10 bg-white/5 py-2 pl-8 pr-8 text-xs font-medium text-slate-200 outline-none transition hover:bg-white/10 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10"
+          >
+            <option
+              value="java"
+              className="bg-slate-900 text-white"
+            >
+              Java
+            </option>
+
+            <option
+              value="javascript"
+              className="bg-slate-900 text-white"
+            >
+              JavaScript
+            </option>
+          </select>
+        </div>
 
         {/* Collaborators */}
-        <div className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-300">
-          <FaUsers className="text-blue-400" />
+        <div className="flex h-9 items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 text-xs text-slate-300">
+          <FaUsers className="text-cyan-400" />
+
           <span>2</span>
+
+          <span className="hidden text-slate-500 md:inline">
+            online
+          </span>
         </div>
 
         {/* Run Button */}
         <button
+          type="button"
           onClick={onRun}
-          className="flex items-center gap-2 rounded-lg bg-green-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-green-700"
+          className="flex h-9 items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-500 px-4 text-xs font-semibold text-white shadow-lg shadow-green-500/10 transition hover:from-emerald-400 hover:to-green-400 hover:shadow-green-500/20 active:scale-95"
         >
-          <FaPlay className="text-xs" />
-          Run
-        </button>
+          <FaPlay className="text-[10px]" />
 
+          <span>Run</span>
+        </button>
       </div>
     </header>
   );
