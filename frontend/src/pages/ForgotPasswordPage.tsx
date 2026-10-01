@@ -4,22 +4,42 @@ import {
   FaEnvelope,
   FaLock,
   FaPaperPlane,
+  FaSpinner,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { authService } from "../services/auth.service";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (email.trim() === "") {
       setMessage("Please enter your email address.");
+      setIsSuccess(false);
       return;
     }
 
-    setMessage("Password reset link has been sent to your email.");
+    try {
+      setLoading(true);
+      setMessage("");
+      const res = await authService.forgotPassword(email.trim());
+      setIsSuccess(true);
+      setMessage(res.message || "If an account with that email exists, a password reset link has been sent.");
+    } catch (err: any) {
+      setIsSuccess(false);
+      setMessage(
+        err.response?.data?.message ||
+        err.response?.data?.errors?.email?.[0] ||
+        "Failed to send reset link. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -88,7 +108,7 @@ const ForgotPasswordPage = () => {
           {message && (
             <div
               className={`mb-5 rounded-lg border px-3 py-2.5 text-xs leading-5 ${
-                message.includes("sent")
+                isSuccess
                   ? "border-green-500/20 bg-green-500/10 text-green-400"
                   : "border-red-500/20 bg-red-500/10 text-red-400"
               }`}
@@ -100,10 +120,20 @@ const ForgotPasswordPage = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-500 hover:shadow-indigo-500/30 active:scale-[0.98]"
+            disabled={loading}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-500 hover:shadow-indigo-500/30 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <FaPaperPlane size={13} />
-            Send Reset Link
+            {loading ? (
+              <>
+                <FaSpinner size={13} className="animate-spin" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <FaPaperPlane size={13} />
+                Send Reset Link
+              </>
+            )}
           </button>
 
         </form>

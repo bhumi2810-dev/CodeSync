@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaLock,
   FaEye,
   FaEyeSlash,
   FaCheck,
   FaArrowLeft,
+  FaSpinner,
 } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { authService } from "../services/auth.service";
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token") || "";
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,30 +23,63 @@ const ResetPasswordPage = () => {
     useState(false);
 
   const [message, setMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  useEffect(() => {
+    if (!token) {
+      setMessage("No password reset token provided. Please request a new reset link.");
+      setIsSuccess(false);
+    }
+  }, [token]);
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (!token) {
+      setMessage("Invalid reset link. Missing token.");
+      setIsSuccess(false);
+      return;
+    }
 
     if (password === "" || confirmPassword === "") {
       setMessage("Please fill in both password fields.");
+      setIsSuccess(false);
       return;
     }
 
     if (password.length < 6) {
       setMessage("Password must be at least 6 characters.");
+      setIsSuccess(false);
       return;
     }
 
     if (password !== confirmPassword) {
       setMessage("Passwords do not match.");
+      setIsSuccess(false);
       return;
     }
 
-    setMessage("Password updated successfully!");
+    try {
+      setLoading(true);
+      setMessage("");
+      const res = await authService.resetPassword(token, password);
+      setIsSuccess(true);
+      setMessage(res.message || "Password updated successfully! Redirecting to login...");
 
-    setTimeout(() => {
-      navigate("/");
-    }, 1500);
+      setTimeout(() => {
+        navigate("/");
+      }, 1800);
+    } catch (err: any) {
+      setIsSuccess(false);
+      setMessage(
+        err.response?.data?.message ||
+        err.response?.data?.errors?.password?.[0] ||
+        "Failed to reset password. The link may be expired."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -181,7 +218,7 @@ const ResetPasswordPage = () => {
           {message && (
             <div
               className={`mb-5 rounded-lg border px-3 py-2.5 text-xs leading-5 ${
-                message === "Password updated successfully!"
+                isSuccess
                   ? "border-green-500/20 bg-green-500/10 text-green-400"
                   : "border-red-500/20 bg-red-500/10 text-red-400"
               }`}
@@ -193,10 +230,20 @@ const ResetPasswordPage = () => {
           {/* Reset Button */}
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-500 hover:shadow-indigo-500/30 active:scale-[0.98]"
+            disabled={loading || !token}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-500 hover:shadow-indigo-500/30 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <FaCheck size={13} />
-            Reset Password
+            {loading ? (
+              <>
+                <FaSpinner size={13} className="animate-spin" />
+                Resetting Password...
+              </>
+            ) : (
+              <>
+                <FaCheck size={13} />
+                Reset Password
+              </>
+            )}
           </button>
 
         </form>

@@ -1,27 +1,36 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   FiEye,
   FiEyeOff,
   FiArrowRight,
   FiGithub,
 } from "react-icons/fi";
-
+import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../services/api";
 import Logo from "../components/common/Logo";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
-
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [githubLoading, setGithubLoading] = useState(false);
 
-  const handleLogin = (event: React.FormEvent) => {
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      setError(errorParam);
+    }
+  }, [searchParams]);
+
+  const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
-
     setError("");
 
     if (!email || !password) {
@@ -29,26 +38,42 @@ const LoginPage = () => {
       return;
     }
 
-    // Temporary frontend navigation.
-    // Backend authentication will be connected later.
-    navigate("/dashboard");
+    setLoading(true);
+    try {
+      await login(email.trim(), password);
+      navigate("/dashboard", { replace: true });
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        setError("Invalid email or password");
+      } else if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to sign in. Please check your connection.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleGithubLogin = () => {
+    setError("");
+    setGithubLoading(true);
+    // Full page browser redirect to backend OAuth endpoint
+    window.location.href = `${API_URL}/api/auth/github`;
+  };
+
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
-
       {/* Decorative background */}
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/10 blur-[110px] sm:h-[500px] sm:w-[500px] sm:blur-[140px]" />
 
       <div className="relative grid w-full max-w-6xl overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40 shadow-2xl backdrop-blur-xl sm:rounded-3xl lg:grid-cols-2">
-
         {/* Left side */}
         <div className="hidden flex-col justify-between p-12 lg:flex">
-
           <Logo size="md" />
 
           <div className="max-w-lg">
-
             <div className="mb-6 inline-flex rounded-full border border-indigo-400/20 bg-indigo-500/10 px-4 py-2 text-xs font-medium text-indigo-300">
               ✦ Collaborative coding workspace
             </div>
@@ -56,10 +81,7 @@ const LoginPage = () => {
             <h1 className="text-5xl font-bold leading-tight text-white">
               Code together.
               <br />
-
-              <span className="gradient-text">
-                Build together.
-              </span>
+              <span className="gradient-text">Build together.</span>
             </h1>
 
             <p className="mt-6 max-w-md text-base leading-7 text-slate-400">
@@ -68,51 +90,31 @@ const LoginPage = () => {
             </p>
 
             <div className="mt-10 flex gap-3">
-
               <div className="glass rounded-xl px-4 py-3">
-                <p className="text-lg font-bold text-white">
-                  Real-time
-                </p>
-
-                <p className="text-xs text-slate-500">
-                  Collaboration
-                </p>
+                <p className="text-lg font-bold text-white">Real-time</p>
+                <p className="text-xs text-slate-500">Collaboration</p>
               </div>
 
               <div className="glass rounded-xl px-4 py-3">
-                <p className="text-lg font-bold text-white">
-                  Fast
-                </p>
-
-                <p className="text-xs text-slate-500">
-                  Code execution
-                </p>
+                <p className="text-lg font-bold text-white">Fast</p>
+                <p className="text-xs text-slate-500">Code execution</p>
               </div>
 
               <div className="glass rounded-xl px-4 py-3">
-                <p className="text-lg font-bold text-white">
-                  Smart
-                </p>
-
-                <p className="text-xs text-slate-500">
-                  Code reviews
-                </p>
+                <p className="text-lg font-bold text-white">Smart</p>
+                <p className="text-xs text-slate-500">Code reviews</p>
               </div>
-
             </div>
           </div>
 
           <p className="text-xs text-slate-600">
             © 2026 CodeSync. Built for developers.
           </p>
-
         </div>
 
         {/* Right side */}
         <div className="flex min-h-[calc(100vh-3rem)] items-center justify-center border-white/10 p-5 sm:p-8 lg:min-h-0 lg:border-l lg:p-12">
-
           <div className="w-full max-w-md">
-
             {/* Mobile logo */}
             <div className="mb-8 sm:mb-10 lg:hidden">
               <Logo size="md" />
@@ -120,7 +122,6 @@ const LoginPage = () => {
 
             {/* Heading */}
             <div className="mb-7 sm:mb-8">
-
               <p className="mb-2 text-sm font-medium text-indigo-400">
                 Welcome back
               </p>
@@ -132,17 +133,11 @@ const LoginPage = () => {
               <p className="mt-2 text-sm text-slate-500">
                 Continue where you left off.
               </p>
-
             </div>
 
-            <form
-              onSubmit={handleLogin}
-              className="space-y-5"
-            >
-
+            <form onSubmit={handleLogin} className="space-y-5">
               {/* Email */}
               <div>
-
                 <label className="mb-2 block text-sm font-medium text-slate-300">
                   Email
                 </label>
@@ -157,14 +152,11 @@ const LoginPage = () => {
                   placeholder="you@example.com"
                   className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none backdrop-blur-md transition placeholder:text-slate-600 focus:border-indigo-400/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-indigo-500/10"
                 />
-
               </div>
 
               {/* Password */}
               <div>
-
                 <div className="mb-2 flex items-center justify-between">
-
                   <label className="text-sm font-medium text-slate-300">
                     Password
                   </label>
@@ -175,11 +167,9 @@ const LoginPage = () => {
                   >
                     Forgot password?
                   </Link>
-
                 </div>
 
                 <div className="relative">
-
                   <input
                     type={showPassword ? "text" : "password"}
                     value={password}
@@ -193,25 +183,15 @@ const LoginPage = () => {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowPassword(!showPassword)
-                    }
+                    onClick={() => setShowPassword(!showPassword)}
                     aria-label={
-                      showPassword
-                        ? "Hide password"
-                        : "Show password"
+                      showPassword ? "Hide password" : "Show password"
                     }
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-300"
                   >
-                    {showPassword ? (
-                      <FiEyeOff size={18} />
-                    ) : (
-                      <FiEye size={18} />
-                    )}
+                    {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                   </button>
-
                 </div>
-
               </div>
 
               {/* Error */}
@@ -227,56 +207,44 @@ const LoginPage = () => {
               {/* Login button */}
               <button
                 type="submit"
-                className="gradient-button flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold text-white"
+                disabled={loading || githubLoading}
+                className="gradient-button flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold text-white disabled:opacity-50"
               >
-                Sign in
-
+                {loading ? "Signing in..." : "Sign in"}
                 <FiArrowRight size={17} />
               </button>
 
               {/* Divider */}
               <div className="flex items-center gap-4 py-2">
-
                 <div className="h-px flex-1 bg-white/10" />
-
-                <span className="text-xs text-slate-600">
-                  OR
-                </span>
-
+                <span className="text-xs text-slate-600">OR</span>
                 <div className="h-px flex-1 bg-white/10" />
-
               </div>
 
               {/* GitHub */}
               <button
                 type="button"
-                className="liquid-button flex w-full items-center justify-center gap-3 rounded-xl px-5 py-3 text-sm font-medium text-slate-300"
+                onClick={handleGithubLogin}
+                disabled={githubLoading || loading}
+                className="liquid-button flex w-full items-center justify-center gap-3 rounded-xl px-5 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:opacity-50"
               >
-                <FiGithub size={18} />
-
-                Continue with GitHub
+                <FiGithub size={18} className="text-white" />
+                {githubLoading ? "Connecting GitHub..." : "Continue with GitHub"}
               </button>
-
             </form>
 
             {/* Signup */}
             <p className="mt-7 text-center text-sm text-slate-500 sm:mt-8">
-
               Don't have an account?{" "}
-
               <Link
                 to="/signup"
                 className="font-medium text-indigo-400 transition hover:text-indigo-300"
               >
                 Create one
               </Link>
-
             </p>
-
           </div>
-
         </div>
-
       </div>
     </div>
   );

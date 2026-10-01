@@ -12,6 +12,3 @@ export const joinRoomSchema = z.object({
 });
 
 export type JoinRoomInput = z.infer<typeof joinRoomSchema>;
-
-// Design note: isBeginnerMode optional hai with default false — 
-// Room schema mein already ye field defined hai (project summary ke Database Design section mein dekha tha).

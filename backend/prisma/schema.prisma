@@ -23,19 +23,27 @@ enum CommentType {
 model User {
   id           String           @id @default(cuid())
   email        String           @unique
-  passwordHash String
+  passwordHash String?
   name         String
+  githubId     String?          @unique
+  provider     String           @default("local")
+  avatarUrl    String?
+  defaultLanguage String        @default("javascript")
+  resetToken   String?
+  resetTokenExpiry DateTime?
   createdAt    DateTime         @default(now())
 
-  ownedRooms   Room[]
-  memberships  RoomMembership[]
-  comments     Comment[]
-  chatMessages ChatMessage[]
-  snapshots    CodeSnapshot[]
+  ownedRooms    Room[]
+  memberships   RoomMembership[]
+  comments      Comment[]
+  chatMessages  ChatMessage[]
+  snapshots     CodeSnapshot[]
+  notifications Notification[]
 }
 
 model Room {
   id             String           @id @default(cuid())
+  code           String?          @unique
   name           String
   ownerId        String
   isBeginnerMode Boolean          @default(false)
@@ -109,4 +117,21 @@ model CodeSnapshot {
 
   @@index([roomId])
   @@index([createdBy])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // ROOM_JOIN | COMMENT | CHAT | SNAPSHOT | SYSTEM
+  title     String
+  message   String
+  roomId    String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
 }

@@ -3,11 +3,13 @@ import { FiTerminal, FiTrash2 } from "react-icons/fi";
 interface OutputConsoleProps {
   output: string;
   error?: string;
+  onClear?: () => void;
 }
 
 const OutputConsole = ({
   output,
   error,
+  onClear,
 }: OutputConsoleProps) => {
   return (
     <div className="flex h-full min-h-0 flex-col bg-slate-950/80">
@@ -29,6 +31,7 @@ const OutputConsole = ({
         {/* Clear Button */}
         <button
           type="button"
+          onClick={onClear}
           title="Clear output"
           className="flex h-7 w-7 items-center justify-center rounded-md text-slate-500 transition hover:bg-white/10 hover:text-slate-200"
         >
@@ -37,23 +40,25 @@ const OutputConsole = ({
       </div>
 
       {/* Console Content */}
-      <div className="min-h-0 flex-1 overflow-auto p-4">
+      <div className="min-h-0 flex-1 overflow-auto p-4 space-y-4">
 
-        {error ? (
+        {error && (
           <div>
             <div className="mb-2 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-red-500" />
 
               <span className="text-xs font-medium text-red-400">
-                Error
+                Execution Error / Compiler Output
               </span>
             </div>
 
-            <pre className="whitespace-pre-wrap font-mono text-xs leading-6 text-red-300">
+            <pre className="whitespace-pre-wrap font-mono text-xs leading-6 text-red-300 bg-red-950/20 border border-red-500/20 p-3 rounded-lg">
               {error}
             </pre>
           </div>
-        ) : output ? (
+        )}
+
+        {output && (
           <div>
             <div className="mb-2 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-green-400" />
@@ -63,11 +68,13 @@ const OutputConsole = ({
               </span>
             </div>
 
-            <pre className="whitespace-pre-wrap font-mono text-xs leading-6 text-slate-300">
+            <pre className="whitespace-pre-wrap font-mono text-xs leading-6 text-slate-200 bg-slate-900/50 border border-white/5 p-3 rounded-lg">
               {output}
             </pre>
           </div>
-        ) : (
+        )}
+
+        {!error && !output && (
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
               <FiTerminal
