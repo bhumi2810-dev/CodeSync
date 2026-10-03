@@ -1,206 +1,91 @@
-# CodeSync — Real-Time Collaborative Code Editor & Review Platform
+# CodeSync
 
-> A unified platform where students and developers can code together in real time, review each other's work, chat, track versions, and safely run code — all in one place.
+**A Real-Time Collaborative Code Editor & Code Review Platform**
 
-## Overview
+CodeSync lets multiple people write, edit, review, and run code together — live, in one place. Think VS Code Live Share + GitHub Code Review + Discord + an online compiler, all combined.
 
-**CodeSync** is a real-time collaborative coding platform that brings together live code editing, code review, chat, version history, and secure code execution in a single workspace.
+---
 
-The platform is designed to simplify collaborative development — from creating a coding room and inviting teammates, to editing code together live, reviewing it with inline comments, and running it safely, all without switching between tools.
+## Why CodeSync?
 
-## Key Features
+Developers usually juggle separate tools — an editor to write code, a chat app to talk, GitHub to review, and another tool to run code. CodeSync brings all of this into one unified workspace, making it easier for students, beginners, and teams to collaborate.
 
-### Authentication
+---
 
-* Secure signup and login
-* JWT-based session handling
-* Password hashing with bcrypt
-* Protected, role-aware routes
+## Features
 
-### Coding Rooms
-
-* Create rooms and invite collaborators
-* Join existing rooms via room ID
-* Role-based access — Owner, Editor, Viewer
-
-### Real-Time Collaborative Editing
-
-* Multiple users editing the same code simultaneously
-* Conflict-free synchronization using CRDTs (Yjs)
-* Live cursor positions and presence indicators
-
-### Code Review System
-
-* Add inline comments on specific lines of code
-* Comment types — Bug, Suggestion, Explanation
-* Resolve or delete comments
-* Works on manually written, pasted, or AI-generated code
-
-### Real-Time Chat
-
-* Dedicated chat per coding room
-* Full message history
-* Real-time delivery over WebSockets
-
-### Version History
-
-* Save snapshots of code at any point
-* View and revisit previous versions
-* Restore older versions when needed
-
-### Secure Code Execution
-
-* Run JavaScript and Python code directly in the platform
-* Execution happens inside isolated Docker containers
-* No internet access, memory/CPU limits, and execution timeouts
+- **Authentication** — Secure signup/login with JWT & password hashing
+- **Coding Rooms** — Create rooms, invite others, manage roles (Owner/Editor/Viewer)
+- **Real-Time Collaborative Editing** — Multiple people editing the same code at once, conflict-free
+- **Live Presence** — See who's online in a room
+- **Code Review Comments** — Add Bug / Suggestion / Explanation notes on specific lines
+- **Real-Time Chat** — Chat with your team inside each room
+- **Version History** — Save and revisit older versions of your code
+- **Safe Code Execution** — Run code inside secure, isolated Docker containers
 
 ---
 
 ## Tech Stack
 
-### Frontend
+**Frontend:** React (TypeScript), Monaco Editor
 
-* **React.js (TypeScript)**
-* **Monaco Editor**
-* **WebSocket Client / Yjs**
+**Backend:** Node.js, Express.js (TypeScript)
 
-### Backend
+**Database:** PostgreSQL + Prisma ORM
 
-* **Node.js**
-* **Express.js (TypeScript)**
-* **Prisma ORM**
-* **PostgreSQL**
+**Real-Time:** WebSockets, Yjs (CRDT)
 
-### Real-Time Layer
+**Auth:** JWT, bcrypt
 
-* **WebSockets**
-* **Yjs (CRDT-based collaboration)**
-
-### Authentication
-
-* **JWT**
-* **bcrypt**
-
-### Code Execution
-
-* **Docker**
-* **Dockerode**
-
-### Development Tools
-
-* **Git**
-* **GitHub**
-* **VS Code**
-* **npm**
+**Code Execution:** Docker + Dockerode
 
 ---
 
-## Project Structure
+## How It Works (High-Level)
+Browser (React + Monaco)
+│
+├── REST API ────► Express ────► PostgreSQL
+│
+└── WebSocket ───► Real-time sync, chat & presence
 
-```text
-codesync/
-│
-├── codesync-server/
-│   ├── prisma/
-│   │   ├── schema.prisma
-│   │   └── migrations/
-│   ├── docker/
-│   │   ├── javascript/
-│   │   └── python/
-│   ├── src/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   ├── middleware/
-│   │   ├── websocket/
-│   │   ├── execution/
-│   │   ├── validators/
-│   │   ├── lib/
-│   │   ├── types/
-│   │   ├── utils/
-│   │   ├── app.ts
-│   │   └── server.ts
-│   ├── .env
-│   ├── package.json
-│   └── tsconfig.json
-│
-├── codesync-client/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── App.jsx
-│   ├── public/
-│   └── package.json
-│
-└── README.md
-```
+Run Code:
+Backend ──► Docker Container (isolated, no internet, time-limited) ──► Output
+
+
+---
 
 ## Getting Started
 
-### Prerequisites
-
-Make sure you have the following installed:
-
-* [Node.js](https://nodejs.org/)
-* [PostgreSQL](https://www.postgresql.org/)
-* [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-* npm
-* Git
-
-### Installation
-
-Clone the repository:
+### Backend
 
 ```bash
-git clone https://github.com/your-username/codesync.git
-```
-
-Navigate to the backend:
-
-```bash
-cd codesync/codesync-server
+cd backend
 npm install
-```
-
-Set up the database:
-
-```bash
 npx prisma generate
 npx prisma migrate dev --name init
+npm run dev
 ```
 
-Build the Docker images used for code execution:
+Server runs on `http://localhost:5000`
+
+### Docker Images (needed for code execution)
 
 ```bash
 docker build -t codesync-js -f docker/javascript/Dockerfile docker/javascript
 docker build -t codesync-python -f docker/python/Dockerfile docker/python
 ```
 
-Start the backend server:
+### Frontend
 
 ```bash
-npm run dev
-```
-
-The backend will be available at `http://localhost:5000`.
-
-Navigate to the frontend:
-
-```bash
-cd ../codesync-client
+cd frontend
 npm install
 npm run dev
 ```
 
-The application will be available at the local development URL provided by the frontend dev server.
-
 ---
 
 ## Environment Variables
-
-Create a `.env` file inside the `codesync-server` directory:
 
 ```env
 PORT=5000
@@ -209,49 +94,33 @@ JWT_SECRET=your_secret_key
 JWT_EXPIRES_IN=7d
 ```
 
-> Never commit sensitive credentials, API keys, or secrets to GitHub.
+---
+
+## Core API Endpoints
+
+| Feature | Endpoint |
+|---|---|
+| Signup | `POST /api/auth/signup` |
+| Login | `POST /api/auth/login` |
+| Create Room | `POST /api/rooms` |
+| Join Room | `POST /api/rooms/:roomId/join` |
+| Add Comment | `POST /api/rooms/:roomId/comments` |
+| Chat History | `GET /api/rooms/:roomId/chat` |
+| Save Snapshot | `POST /api/rooms/:roomId/snapshots` |
+| Run Code | `POST /api/execute` |
+
+Real-time features (editing, chat, presence) run over WebSocket, not REST.
 
 ---
 
-## Application Modules
+## Security Highlights
 
-| Module              | Description                                     |
-| ------------------- | ------------------------------------------------ |
-| Authentication       | Signup, login, and protected route access        |
-| Rooms                 | Create and join collaborative coding rooms       |
-| Real-Time Editing     | Live, conflict-free collaborative code editing   |
-| Presence              | Track online users and cursor positions          |
-| Code Review           | Inline comments on code with resolve/delete      |
-| Chat                    | Real-time messaging per room                    |
-| Version History      | Save, list, and restore code snapshots           |
-| Code Execution        | Run code safely inside isolated Docker containers |
+- Passwords hashed with bcrypt, never stored in plain text
+- JWT-based authentication on all protected routes
+- User code runs in isolated Docker containers with no internet access, memory/CPU limits, and a 5-second timeout
 
 ---
 
-## Future Enhancements
-
-* Redis integration for presence and session scaling
-* Rate limiting on the code execution endpoint
-* Automated testing (unit and integration)
-* Support for additional programming languages
-* CI/CD-based deployment
-* Mobile-responsive UI improvements
-
----
-
-## Project Status
-
-**Backend fully implemented. Frontend in final stages of development.**
-
-All core backend modules — authentication, rooms, real-time collaboration, code review, chat, version history, and secure code execution — are complete and tested. Frontend integration is in progress.
-
----
-
-## Team
-
-Built as a team project as part of Back-end Engineering coursework at Chitkara University.
-
----
 
 ## License
 
